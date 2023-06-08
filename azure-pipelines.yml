@@ -10,7 +10,7 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'b434602d-89ae-49e3-9155-db1cbf862862'
+  dockerRegistryServiceConnection: AzConn # 'b434602d-89ae-49e3-9155-db1cbf862862'
   imageRepository: 'jimbrigflaskbase'
   containerRegistry: 'webappcontainerz.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
@@ -28,6 +28,15 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'AzDevSub(3af19afb-10a5-4aed-8909-a1f11ef0afc6)'
+        appType: 'webAppContainer'
+        WebAppName: 'flaskbase'
+        DockerNamespace: 'flask'
+        DockerRepository: 'flaskbase'
+        DockerImageTag: 'latest'
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
